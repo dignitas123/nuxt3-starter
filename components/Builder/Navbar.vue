@@ -6,11 +6,10 @@ const navbar = ref(null)
 const showDrawer = useState<boolean>('navbar.showDrawer', () => false)
 const showOptions = useState<boolean>('navbar.showOptions', () => false)
 
-onMounted(() => {
-  if (!navbar.value) return
+if (navbar.value) {
   const { onScroll } = useSticky(navbar.value, 0)
   setTimeout(() => onScroll(), 50)
-})
+}
 
 const toggleDrawer = () => (showDrawer.value = !showDrawer.value)
 const toggleOptions = (show?: boolean) => {

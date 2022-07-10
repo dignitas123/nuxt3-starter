@@ -1,7 +1,7 @@
-const fs = require('fs')
-const path = require('path')
-const yaml = require('js-yaml')
-const translate = require('translate')
+import { readdirSync, statSync, readFileSync, writeFileSync } from 'fs'
+import { join } from 'path'
+import { load, dump } from 'js-yaml'
+import translate, { engine } from 'translate'
 const args = process.argv.slice(2)
 
 // funcs
@@ -16,9 +16,9 @@ const getArg = (index, def = undefined) => {
 }
 const getFiles = (dir) => {
   const files = []
-  fs.readdirSync(dir).forEach((file) => {
-    const filePath = path.join(dir, file)
-    const stat = fs.statSync(filePath)
+  readdirSync(dir).forEach((file) => {
+    const filePath = join(dir, file)
+    const stat = statSync(filePath)
     if (stat.isFile() && file.endsWith('.yml'))
       files.push({
         path: filePath,
@@ -73,8 +73,8 @@ const translateFile = async (file, locale) => {
 
 // vars
 const cwd = process.cwd()
-const localePath = path.join(cwd, getArg(0, './locales'))
-const engLocale = path.join(localePath, getArg(1, 'en.yml'))
+const localePath = join(cwd, getArg(0, './locales'))
+const engLocale = join(localePath, getArg(1, 'en.yml'))
 const listLocaleToTranslate = getFiles(localePath).filter(
   (l) => l.lang !== 'en'
 )
@@ -91,18 +91,18 @@ async function main() {
 
   // translating
   console.log('==============================================')
-  console.log(`Starting translate with engine "${translate.engine}"...`)
+  console.log(`Starting translate with engine "${engine}"...`)
   for (const locale of listLocaleToTranslate) {
     console.log(`Translating ${locale.lang}...`)
     try {
       // load file
-      const file = yaml.load(fs.readFileSync(engLocale, 'utf8'))
+      const file = load(readFileSync(engLocale, 'utf8'))
 
       // translate
       const t = await translateFile(file, locale)
 
       // save to file
-      fs.writeFileSync(locale.path, yaml.dump(t))
+      writeFileSync(locale.path, dump(t))
     } catch (e) {
       console.error(e)
     }
