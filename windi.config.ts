@@ -1,9 +1,6 @@
 import { defineConfig } from 'windicss/helpers'
 import type { Plugin } from 'windicss/types/interfaces'
 
-// colors
-// import colors from 'windicss/colors'
-
 // plugins
 import TypographyPlugin from 'windicss/plugin/typography'
 import AspectRatioPlugin from 'windicss/plugin/aspect-ratio'
